@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PregnancyAI Assistant</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero">
+        <div>
+          <p class="kicker">PregnancyAI</p>
+          <h1>Attractive, reliable guidance for pregnancy questions</h1>
+          <p class="subtitle">
+            Ask about symptoms, nutrition, appointments, and safe habits. Responses are ranked with confidence
+            scoring so you get more accurate answers.
+          </p>
+        </div>
+      </section>
+
+      <section class="chat-card">
+        <header class="chat-header">
+          <div class="status-dot"></div>
+          <div>
+            <h2>Care Chatbot</h2>
+            <p>Fast, evidence-aligned suggestions (not a diagnosis)</p>
+          </div>
+        </header>
+
+        <div id="chat-window" class="chat-window" aria-live="polite"></div>
+
+        <div class="quick-actions">
+          <button class="chip" data-query="What foods should I avoid during pregnancy?">Foods to avoid</button>
+          <button class="chip" data-query="How much water should I drink while pregnant?">Hydration</button>
+          <button class="chip" data-query="When should I call my doctor about bleeding?">Emergency signs</button>
+        </div>
+
+        <form id="chat-form" class="chat-form">
+          <input id="chat-input" type="text" autocomplete="off" placeholder="Ask a pregnancy question..." required />
+          <button type="submit">Send</button>
+        </form>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
