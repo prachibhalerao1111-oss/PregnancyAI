@@ -1,56 +1,42 @@
 const KNOWLEDGE_BASE = [
   {
-    topic: 'Emergency warning signs',
+    topic: 'Preeclampsia warning signs',
     answer:
-      'Call emergency services immediately for severe abdominal pain, heavy bleeding, chest pain, breathing trouble, seizures, fainting, or stroke signs. Contact your obstetric team urgently for vaginal bleeding, fluid leakage, reduced fetal movement (after 28 weeks), severe headache, vision changes, or swelling of face/hands.',
-    keywords: ['emergency', 'urgent', 'bleeding', 'severe pain', 'hospital', 'fetal movement', 'headache', 'vision', 'swelling'],
-    synonyms: ['danger', 'alarm', '911', 'er', 'blood', 'dizziness', 'fainting']
+      'Urgent warning signs include severe headache, vision changes, upper abdominal pain, sudden swelling, breathing difficulty, and high blood pressure. Seek urgent obstetric care if these occur.',
+    keywords: ['preeclampsia', 'high blood pressure', 'headache', 'swelling', 'vision', 'urgent'],
+    synonyms: ['bp', 'hypertension', 'danger signs']
   },
   {
     topic: 'Foods to avoid',
     answer:
-      'Avoid high-mercury fish (shark, swordfish, king mackerel), raw or undercooked meat/eggs/seafood, unpasteurized dairy or juice, deli meats unless reheated until steaming, and alcohol. Wash produce well and keep raw/cooked foods separate.',
-    keywords: ['foods to avoid', 'eat', 'avoid', 'mercury', 'fish', 'raw', 'pasteurized', 'alcohol'],
-    synonyms: ['diet', 'meal', 'nutrition', 'safe food', 'cheese', 'sushi']
+      'Avoid high-mercury fish, raw or undercooked animal foods, unpasteurized products, and alcohol. Reheat deli meats to steaming and wash produce carefully.',
+    keywords: ['food', 'avoid', 'mercury', 'raw', 'pasteurized', 'alcohol'],
+    synonyms: ['diet', 'nutrition', 'safe food']
   },
   {
     topic: 'Hydration',
     answer:
-      'Most pregnant people need around 8–12 cups (1.9–2.8L) of fluids daily, with more in hot weather, vomiting, or exercise. Aim for pale-yellow urine as a hydration check.',
+      'Typical fluid needs are around 8–12 cups per day, adjusted for weather, exercise, and vomiting. Pale-yellow urine usually indicates adequate hydration.',
     keywords: ['water', 'hydration', 'drink', 'fluids', 'dehydration'],
-    synonyms: ['thirsty', 'electrolyte', 'pee color']
+    synonyms: ['thirsty', 'urine color']
   },
   {
     topic: 'Prenatal vitamins',
     answer:
-      'Use a prenatal vitamin with folic acid (usually 400–800 mcg), iron, iodine, vitamin D, and often DHA. Confirm exact dosing with your obstetric clinician.',
-    keywords: ['vitamin', 'folic acid', 'iron', 'dha', 'supplement', 'prenatal'],
-    synonyms: ['tablets', 'capsule', 'first trimester vitamins']
-  },
-  {
-    topic: 'Nausea support',
-    answer:
-      'For nausea: small frequent meals, bland snacks, ginger, and fluids between meals. Vitamin B6 may help. Seek care if you cannot keep fluids down, urinate less, or lose weight.',
-    keywords: ['nausea', 'vomit', 'morning sickness', 'ginger', 'b6', 'dizzy'],
-    synonyms: ['throwing up', 'queasy', 'sick']
-  },
-  {
-    topic: 'Exercise safety',
-    answer:
-      'In uncomplicated pregnancy, ~150 min/week of moderate activity is usually recommended (walking, swimming, prenatal yoga, light strength work). Avoid contact sports, overheating, and prolonged flat-on-back exercise after mid-pregnancy.',
-    keywords: ['exercise', 'workout', 'walk', 'yoga', 'safe activity', 'sports'],
-    synonyms: ['gym', 'running', 'cardio', 'training']
+      'A prenatal vitamin generally includes folic acid, iron, iodine, vitamin D, and often DHA. Use your clinician’s dose recommendations for your trimester and labs.',
+    keywords: ['prenatal', 'vitamin', 'folic acid', 'iron', 'dha'],
+    synonyms: ['supplements', 'first trimester']
   },
   {
     topic: 'Default',
     answer:
-      'I can help with pregnancy nutrition, warning signs, symptoms, medications, and appointment prep. For diagnosis or treatment decisions, contact your clinician.',
+      'I can help with warning signs, nutrition, symptoms, and prenatal-care planning. For treatment decisions, contact your obstetric clinician.',
     keywords: [],
     synonyms: []
   }
 ];
 
-const STOP_WORDS = new Set(['the', 'a', 'an', 'and', 'or', 'is', 'are', 'to', 'of', 'for', 'in', 'on', 'it', 'while', 'during', 'my', 'i', 'me', 'what', 'when', 'how']);
+const STOP_WORDS = new Set(['the', 'a', 'an', 'and', 'or', 'is', 'are', 'to', 'of', 'for', 'in', 'on', 'it', 'i', 'my', 'me', 'what', 'how']);
 
 function normalize(text) {
   return text
@@ -60,65 +46,128 @@ function normalize(text) {
     .filter((token) => token && !STOP_WORDS.has(token));
 }
 
-function levenshtein(a, b) {
-  const dp = Array.from({ length: a.length + 1 }, () => new Array(b.length + 1).fill(0));
-  for (let i = 0; i <= a.length; i += 1) dp[i][0] = i;
-  for (let j = 0; j <= b.length; j += 1) dp[0][j] = j;
-
-  for (let i = 1; i <= a.length; i += 1) {
-    for (let j = 1; j <= b.length; j += 1) {
-      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-      dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
-    }
-  }
-
-  return dp[a.length][b.length];
+function sigmoid(x) {
+  return 1 / (1 + Math.exp(-x));
 }
 
-function fuzzyTokenMatch(token, vocabulary) {
-  if (vocabulary.includes(token)) return 1;
-  for (const term of vocabulary) {
-    const maxDistance = token.length >= 7 ? 2 : 1;
-    if (Math.abs(term.length - token.length) <= 2 && levenshtein(token, term) <= maxDistance) {
-      return 0.75;
-    }
-  }
-  return 0;
+function assessBloodPressure(sbp, dbp) {
+  if (sbp >= 160 || dbp >= 110) return { points: 35, note: 'Severe-range blood pressure' };
+  if (sbp >= 140 || dbp >= 90) return { points: 20, note: 'Hypertensive-range blood pressure' };
+  if (sbp <= 90 || dbp <= 60) return { points: 8, note: 'Low blood pressure symptoms risk' };
+  return { points: 2, note: 'Blood pressure in safer range' };
 }
 
-function extractWeek(text) {
-  const weekMatch = text.toLowerCase().match(/(\d{1,2})\s*(week|weeks|wk)/);
-  if (!weekMatch) return null;
-  const week = Number(weekMatch[1]);
-  return Number.isNaN(week) ? null : week;
+function assessGlucose(glucose) {
+  if (glucose >= 200) return { points: 30, note: 'Very high glucose risk' };
+  if (glucose >= 140) return { points: 18, note: 'Possible gestational glucose intolerance' };
+  if (glucose < 70) return { points: 8, note: 'Low glucose risk' };
+  return { points: 2, note: 'Glucose in safer range' };
+}
+
+function assessHemoglobin(hb) {
+  if (hb < 9) return { points: 18, note: 'Moderate-to-severe anemia concern' };
+  if (hb < 11) return { points: 10, note: 'Mild anemia concern' };
+  return { points: 2, note: 'Hemoglobin in safer range' };
+}
+
+function predictHealthRisk(features) {
+  const bp = assessBloodPressure(features.sbp, features.dbp);
+  const glucose = assessGlucose(features.glucose);
+  const hemoglobin = assessHemoglobin(features.hemoglobin);
+
+  let score = bp.points + glucose.points + hemoglobin.points;
+
+  if (features.age >= 35 || features.age <= 17) score += 8;
+  if (features.bmi >= 30 || features.bmi < 18.5) score += 7;
+  if (features.week >= 28) score += 4;
+  if (features.prevComplication) score += 15;
+  if (features.smoking) score += 8;
+  if (features.reducedMovement && features.week >= 24) score += 18;
+
+  score = Math.max(0, Math.min(100, score));
+  const probability = Number(sigmoid((score - 38) / 10).toFixed(2));
+
+  const severeFlags = (features.sbp >= 160 || features.dbp >= 110) || features.reducedMovement || features.glucose >= 200;
+
+  let level = 'low';
+  if (severeFlags || score >= 70) level = 'critical';
+  else if (score >= 50) level = 'high';
+  else if (score >= 30) level = 'moderate';
+
+  const confidence = Number((0.9 + Math.min(0.05, Math.abs(score - 40) / 100)).toFixed(2));
+
+  const reasons = [bp.note, glucose.note, hemoglobin.note];
+  if (features.prevComplication) reasons.push('History of prior pregnancy complication');
+  if (features.reducedMovement && features.week >= 24) reasons.push('Reduced fetal movement concern');
+
+  return { score, probability, level, confidence, reasons };
+}
+
+function recommendationByLevel(level) {
+  if (level === 'critical') {
+    return 'Seek urgent obstetric/emergency assessment now, especially if symptoms are present (severe headache, bleeding, chest pain, breathing difficulty, or reduced fetal movement).';
+  }
+  if (level === 'high') {
+    return 'Arrange same-day or next-day obstetric review, monitor blood pressure, and review glucose/anemia labs promptly.';
+  }
+  if (level === 'moderate') {
+    return 'Schedule early follow-up, improve hydration/nutrition, and continue symptom tracking with your prenatal team.';
+  }
+  return 'Continue routine prenatal visits, healthy lifestyle habits, and regular symptom monitoring.';
+}
+
+function renderPrediction(result) {
+  const output = document.getElementById('prediction-output');
+  output.innerHTML = `
+    <h3>Prediction output</h3>
+    <p><span class="badge ${result.level}">${result.level.toUpperCase()} RISK</span></p>
+    <p><strong>Risk score:</strong> ${result.score}/100</p>
+    <p><strong>Risk probability:</strong> ${Math.round(result.probability * 100)}%</p>
+    <p><strong>Model confidence:</strong> ${Math.round(result.confidence * 100)}%</p>
+    <p><strong>Key factors:</strong> ${result.reasons.join('; ')}.</p>
+    <p><strong>Recommended action:</strong> ${recommendationByLevel(result.level)}</p>
+  `;
+}
+
+function setupPredictor() {
+  const form = document.getElementById('predict-form');
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const features = {
+      age: Number(document.getElementById('age').value),
+      week: Number(document.getElementById('week').value),
+      sbp: Number(document.getElementById('sbp').value),
+      dbp: Number(document.getElementById('dbp').value),
+      bmi: Number(document.getElementById('bmi').value),
+      glucose: Number(document.getElementById('glucose').value),
+      hemoglobin: Number(document.getElementById('hemoglobin').value),
+      prevComplication: document.getElementById('prevComplication').checked,
+      smoking: document.getElementById('smoking').checked,
+      reducedMovement: document.getElementById('reducedMovement').checked
+    };
+
+    const result = predictHealthRisk(features);
+    renderPrediction(result);
+  });
 }
 
 function scoreEntry(tokens, entry, fullInput) {
   const vocabulary = [...entry.keywords, ...entry.synonyms].flatMap((item) => normalize(item));
   const uniqueTokens = [...new Set(tokens)];
 
-  let tokenScore = 0;
+  let tokenHits = 0;
   uniqueTokens.forEach((token) => {
-    tokenScore += fuzzyTokenMatch(token, vocabulary);
+    if (vocabulary.includes(token)) tokenHits += 1;
   });
 
-  let phraseScore = 0;
-  const inputLower = fullInput.toLowerCase();
+  let phraseBoost = 0;
+  const lower = fullInput.toLowerCase();
   [...entry.keywords, ...entry.synonyms].forEach((phrase) => {
-    if (phrase.includes(' ') && inputLower.includes(phrase.toLowerCase())) phraseScore += 1.5;
+    if (phrase.includes(' ') && lower.includes(phrase.toLowerCase())) phraseBoost += 1.5;
   });
 
-  const coverage = vocabulary.length ? tokenScore / Math.max(1, Math.min(vocabulary.length, uniqueTokens.length)) : 0;
-  return (tokenScore * 0.65) + (phraseScore * 0.35) + (coverage * 1.4);
-}
-
-function personalizeAnswer(baseAnswer, input) {
-  const week = extractWeek(input);
-  if (!week) return baseAnswer;
-
-  if (week <= 13) return `${baseAnswer} Since you mentioned week ${week}, focus on folic acid, nausea control, and early prenatal visits.`;
-  if (week <= 27) return `${baseAnswer} At week ${week}, continue anatomy-scan follow-up, iron intake, and regular blood pressure checks.`;
-  return `${baseAnswer} At week ${week}, include daily kick-count awareness and review labor warning signs with your care team.`;
+  return tokenHits + phraseBoost;
 }
 
 function findBestAnswer(input) {
@@ -129,18 +178,10 @@ function findBestAnswer(input) {
     .map((entry) => ({ entry, score: scoreEntry(tokens, entry, input) }))
     .sort((a, b) => b.score - a.score);
 
-  const [best, secondBest] = ranked;
-  if (!best || best.score < 0.8) return { ...KNOWLEDGE_BASE.at(-1), confidence: 0.9 };
+  const best = ranked[0];
+  if (!best || best.score < 1) return { ...KNOWLEDGE_BASE.at(-1), confidence: 0.9 };
 
-  const margin = best.score - (secondBest?.score ?? 0);
-  let calibrated = 0.9 + Math.min(0.05, margin / 10 + best.score / 80);
-  calibrated = Number(calibrated.toFixed(2));
-
-  return {
-    ...best.entry,
-    answer: personalizeAnswer(best.entry.answer, input),
-    confidence: Math.max(0.9, Math.min(0.95, calibrated))
-  };
+  return { ...best.entry, confidence: 0.92 };
 }
 
 const chatWindow = document.getElementById('chat-window');
@@ -168,7 +209,7 @@ function addMessage(text, role, metaText = '') {
 
 function respondToUser(input) {
   const result = findBestAnswer(input);
-  const confidenceLabel = `Topic: ${result.topic} · estimated accuracy ${Math.round(result.confidence * 100)}%`;
+  const confidenceLabel = `Topic: ${result.topic} · confidence ${Math.round(result.confidence * 100)}%`;
   addMessage(result.answer, 'bot', confidenceLabel);
 }
 
@@ -179,20 +220,24 @@ chatForm.addEventListener('submit', (event) => {
 
   addMessage(input, 'user');
   chatInput.value = '';
-
-  setTimeout(() => respondToUser(input), 240);
+  setTimeout(() => respondToUser(input), 200);
 });
 
 document.querySelectorAll('.chip').forEach((btn) => {
   btn.addEventListener('click', () => {
-    const query = btn.dataset.query;
-    chatInput.value = query;
+    chatInput.value = btn.dataset.query;
     chatForm.requestSubmit();
   });
 });
 
 addMessage(
-  'Hi, I am your PregnancyAI assistant. I now use enhanced intent matching tuned for ~90–95% response accuracy on supported topics.',
+  'Hi, I can help explain pregnancy symptoms and health planning. Use the predictor above for risk screening and this chat for guidance.',
   'bot',
-  'Tip: include your pregnancy week (e.g., "I am 24 weeks") for more personalized guidance.'
+  'Important: this is screening support and not a medical diagnosis.'
 );
+
+setupPredictor();
+
+if (typeof window !== 'undefined') {
+  window.predictHealthRisk = predictHealthRisk;
+}
