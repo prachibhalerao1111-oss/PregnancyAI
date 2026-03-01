@@ -1,41 +1,28 @@
-# PregnancyAI Predictive Health System
+# PregnancyAI Care Chatbot
 
-PregnancyAI is a static web application that combines:
+PregnancyAI is now a **chatbot-only** static web app focused on friendly pregnancy guidance.
 
-1. **Pregnancy risk screening** using client-side health-factor scoring.
-2. **Care chatbot guidance** for common prenatal questions.
+## Features
 
-> ⚠️ This project is for **education and screening support** only and is **not a diagnosis system**.
+- Baby-pink, attractive chat interface.
+- Hero + gallery images for a warm visual experience.
+- Rule-based chatbot responses for:
+  - warning signs,
+  - foods to avoid,
+  - hydration,
+  - prenatal vitamins,
+  - exercise,
+  - sleep comfort.
+- Quick-action chips for common questions.
 
-## What this project includes
+> ⚠️ This tool provides educational support only and is not a medical diagnosis platform.
 
-- `index.html` – app shell with predictor form, prediction output, and chatbot UI.
-- `script.js` – predictor logic, explainability output, and chatbot matching logic.
-- `styles.css` – responsive theme, predictor/chat cards, and risk badges.
-- `tests/predictor.test.js` – Node-based validation for predictor and chatbot routing.
+## Project files
 
-## Predictor model summary
-
-The predictor computes risk from:
-
-- Maternal age
-- Gestational week
-- Systolic/diastolic blood pressure
-- BMI
-- Glucose
-- Hemoglobin
-- Prior pregnancy complication history
-- Smoking
-- Reduced fetal movement flag
-
-### Output
-
-- Risk score (`0-100`)
-- Risk probability (`0-1`, sigmoid-mapped)
-- Risk level (`low`, `moderate`, `high`, `critical`)
-- Confidence estimate
-- Key contributing factors
-- Recommended action based on risk level
+- `index.html` — chatbot UI with image-rich layout.
+- `styles.css` — baby-pink visual theme and responsive styles.
+- `script.js` — chatbot knowledge base, matching logic, and chat rendering.
+- `tests/chatbot.test.js` — automated validation for chatbot topic routing.
 
 ## Run locally
 
@@ -43,17 +30,11 @@ The predictor computes risk from:
 python -m http.server 4173
 ```
 
-Then open `http://127.0.0.1:4173`.
+Open: `http://127.0.0.1:4173`
 
-## Test locally
+## Run tests
 
 ```bash
 node --check script.js
-node tests/predictor.test.js
+node tests/chatbot.test.js
 ```
-
-## Notes for GitHub reviewers
-
-- The predictor is intentionally explainable and deterministic.
-- Logic is implemented fully client-side to keep deployment simple.
-- Clinical use requires medical validation and regulated workflows.

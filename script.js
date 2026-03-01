@@ -1,36 +1,50 @@
 const KNOWLEDGE_BASE = [
   {
-    topic: 'Preeclampsia warning signs',
+    topic: 'Warning signs',
     answer:
-      'Urgent warning signs include severe headache, vision changes, upper abdominal pain, sudden swelling, breathing difficulty, and high blood pressure. Seek urgent obstetric care if these occur.',
-    keywords: ['preeclampsia', 'high blood pressure', 'headache', 'swelling', 'vision', 'urgent'],
-    synonyms: ['bp', 'hypertension', 'danger signs']
+      'Call emergency care immediately for severe abdominal pain, heavy bleeding, chest pain, breathing trouble, seizures, or fainting. Contact your obstetric team urgently for fluid leakage, severe headache, vision changes, or reduced fetal movement after 28 weeks.',
+    keywords: ['warning signs', 'bleeding', 'emergency', 'danger', 'pain', 'headache', 'vision', 'fetal movement'],
+    synonyms: ['urgent', 'hospital', 'alarm']
   },
   {
     topic: 'Foods to avoid',
     answer:
-      'Avoid high-mercury fish, raw or undercooked animal foods, unpasteurized products, and alcohol. Reheat deli meats to steaming and wash produce carefully.',
-    keywords: ['food', 'avoid', 'mercury', 'raw', 'pasteurized', 'alcohol'],
-    synonyms: ['diet', 'nutrition', 'safe food']
+      'Avoid alcohol, high-mercury fish, raw or undercooked meat/eggs/seafood, and unpasteurized dairy products. Reheat deli meats to steaming and wash fruits/vegetables well.',
+    keywords: ['foods', 'avoid', 'diet', 'raw', 'mercury', 'alcohol', 'pasteurized'],
+    synonyms: ['nutrition', 'safe foods', 'sushi', 'cheese']
   },
   {
     topic: 'Hydration',
     answer:
-      'Typical fluid needs are around 8–12 cups per day, adjusted for weather, exercise, and vomiting. Pale-yellow urine usually indicates adequate hydration.',
+      'Most pregnant women need around 8 to 12 cups of fluids daily. Drink more in hot weather, with exercise, or with vomiting. Pale-yellow urine is a useful hydration clue.',
     keywords: ['water', 'hydration', 'drink', 'fluids', 'dehydration'],
     synonyms: ['thirsty', 'urine color']
   },
   {
     topic: 'Prenatal vitamins',
     answer:
-      'A prenatal vitamin generally includes folic acid, iron, iodine, vitamin D, and often DHA. Use your clinician’s dose recommendations for your trimester and labs.',
-    keywords: ['prenatal', 'vitamin', 'folic acid', 'iron', 'dha'],
-    synonyms: ['supplements', 'first trimester']
+      'Prenatal vitamins usually include folic acid, iron, iodine, vitamin D, and DHA. Confirm exact dose and brand with your obstetric clinician.',
+    keywords: ['vitamins', 'prenatal', 'folic acid', 'iron', 'dha', 'supplements'],
+    synonyms: ['tablets', 'capsules']
+  },
+  {
+    topic: 'Exercise',
+    answer:
+      'In uncomplicated pregnancies, moderate activity is often safe (walking, swimming, prenatal yoga). Avoid contact sports, overheating, and activities with high fall risk.',
+    keywords: ['exercise', 'workout', 'walking', 'yoga', 'safe', 'activity'],
+    synonyms: ['gym', 'fitness', 'running']
+  },
+  {
+    topic: 'Sleep comfort',
+    answer:
+      'Try sleeping on your side (often left side), use pillows between knees and under your bump, and keep a regular bedtime routine for better comfort.',
+    keywords: ['sleep', 'insomnia', 'side sleeping', 'night'],
+    synonyms: ['rest', 'tired', 'position']
   },
   {
     topic: 'Default',
     answer:
-      'I can help with warning signs, nutrition, symptoms, and prenatal-care planning. For treatment decisions, contact your obstetric clinician.',
+      'I can help with pregnancy nutrition, warning signs, hydration, exercise, sleep comfort, and prenatal-care tips. For diagnosis or medication decisions, please contact your clinician.',
     keywords: [],
     synonyms: []
   }
@@ -46,112 +60,6 @@ function normalize(text) {
     .filter((token) => token && !STOP_WORDS.has(token));
 }
 
-function sigmoid(x) {
-  return 1 / (1 + Math.exp(-x));
-}
-
-function assessBloodPressure(sbp, dbp) {
-  if (sbp >= 160 || dbp >= 110) return { points: 35, note: 'Severe-range blood pressure' };
-  if (sbp >= 140 || dbp >= 90) return { points: 20, note: 'Hypertensive-range blood pressure' };
-  if (sbp <= 90 || dbp <= 60) return { points: 8, note: 'Low blood pressure symptoms risk' };
-  return { points: 2, note: 'Blood pressure in safer range' };
-}
-
-function assessGlucose(glucose) {
-  if (glucose >= 200) return { points: 30, note: 'Very high glucose risk' };
-  if (glucose >= 140) return { points: 18, note: 'Possible gestational glucose intolerance' };
-  if (glucose < 70) return { points: 8, note: 'Low glucose risk' };
-  return { points: 2, note: 'Glucose in safer range' };
-}
-
-function assessHemoglobin(hb) {
-  if (hb < 9) return { points: 18, note: 'Moderate-to-severe anemia concern' };
-  if (hb < 11) return { points: 10, note: 'Mild anemia concern' };
-  return { points: 2, note: 'Hemoglobin in safer range' };
-}
-
-function predictHealthRisk(features) {
-  const bp = assessBloodPressure(features.sbp, features.dbp);
-  const glucose = assessGlucose(features.glucose);
-  const hemoglobin = assessHemoglobin(features.hemoglobin);
-
-  let score = bp.points + glucose.points + hemoglobin.points;
-
-  if (features.age >= 35 || features.age <= 17) score += 8;
-  if (features.bmi >= 30 || features.bmi < 18.5) score += 7;
-  if (features.week >= 28) score += 4;
-  if (features.prevComplication) score += 15;
-  if (features.smoking) score += 8;
-  if (features.reducedMovement && features.week >= 24) score += 18;
-
-  score = Math.max(0, Math.min(100, score));
-  const probability = Number(sigmoid((score - 38) / 10).toFixed(2));
-
-  const severeFlags = (features.sbp >= 160 || features.dbp >= 110) || features.reducedMovement || features.glucose >= 200;
-
-  let level = 'low';
-  if (severeFlags || score >= 70) level = 'critical';
-  else if (score >= 50) level = 'high';
-  else if (score >= 30) level = 'moderate';
-
-  const confidence = Number((0.9 + Math.min(0.05, Math.abs(score - 40) / 100)).toFixed(2));
-
-  const reasons = [bp.note, glucose.note, hemoglobin.note];
-  if (features.prevComplication) reasons.push('History of prior pregnancy complication');
-  if (features.reducedMovement && features.week >= 24) reasons.push('Reduced fetal movement concern');
-
-  return { score, probability, level, confidence, reasons };
-}
-
-function recommendationByLevel(level) {
-  if (level === 'critical') {
-    return 'Seek urgent obstetric/emergency assessment now, especially if symptoms are present (severe headache, bleeding, chest pain, breathing difficulty, or reduced fetal movement).';
-  }
-  if (level === 'high') {
-    return 'Arrange same-day or next-day obstetric review, monitor blood pressure, and review glucose/anemia labs promptly.';
-  }
-  if (level === 'moderate') {
-    return 'Schedule early follow-up, improve hydration/nutrition, and continue symptom tracking with your prenatal team.';
-  }
-  return 'Continue routine prenatal visits, healthy lifestyle habits, and regular symptom monitoring.';
-}
-
-function renderPrediction(result) {
-  const output = document.getElementById('prediction-output');
-  output.innerHTML = `
-    <h3>Prediction output</h3>
-    <p><span class="badge ${result.level}">${result.level.toUpperCase()} RISK</span></p>
-    <p><strong>Risk score:</strong> ${result.score}/100</p>
-    <p><strong>Risk probability:</strong> ${Math.round(result.probability * 100)}%</p>
-    <p><strong>Model confidence:</strong> ${Math.round(result.confidence * 100)}%</p>
-    <p><strong>Key factors:</strong> ${result.reasons.join('; ')}.</p>
-    <p><strong>Recommended action:</strong> ${recommendationByLevel(result.level)}</p>
-  `;
-}
-
-function setupPredictor() {
-  const form = document.getElementById('predict-form');
-  form.addEventListener('submit', (event) => {
-    event.preventDefault();
-
-    const features = {
-      age: Number(document.getElementById('age').value),
-      week: Number(document.getElementById('week').value),
-      sbp: Number(document.getElementById('sbp').value),
-      dbp: Number(document.getElementById('dbp').value),
-      bmi: Number(document.getElementById('bmi').value),
-      glucose: Number(document.getElementById('glucose').value),
-      hemoglobin: Number(document.getElementById('hemoglobin').value),
-      prevComplication: document.getElementById('prevComplication').checked,
-      smoking: document.getElementById('smoking').checked,
-      reducedMovement: document.getElementById('reducedMovement').checked
-    };
-
-    const result = predictHealthRisk(features);
-    renderPrediction(result);
-  });
-}
-
 function scoreEntry(tokens, entry, fullInput) {
   const vocabulary = [...entry.keywords, ...entry.synonyms].flatMap((item) => normalize(item));
   const uniqueTokens = [...new Set(tokens)];
@@ -164,7 +72,7 @@ function scoreEntry(tokens, entry, fullInput) {
   let phraseBoost = 0;
   const lower = fullInput.toLowerCase();
   [...entry.keywords, ...entry.synonyms].forEach((phrase) => {
-    if (phrase.includes(' ') && lower.includes(phrase.toLowerCase())) phraseBoost += 1.5;
+    if (phrase.includes(' ') && lower.includes(phrase.toLowerCase())) phraseBoost += 1.4;
   });
 
   return tokenHits + phraseBoost;
@@ -178,10 +86,12 @@ function findBestAnswer(input) {
     .map((entry) => ({ entry, score: scoreEntry(tokens, entry, input) }))
     .sort((a, b) => b.score - a.score);
 
-  const best = ranked[0];
+  const [best, secondBest] = ranked;
   if (!best || best.score < 1) return { ...KNOWLEDGE_BASE.at(-1), confidence: 0.9 };
 
-  return { ...best.entry, confidence: 0.92 };
+  const margin = best.score - (secondBest?.score ?? 0);
+  const confidence = Number((Math.min(0.95, 0.9 + Math.max(0, margin) / 20)).toFixed(2));
+  return { ...best.entry, confidence };
 }
 
 const chatWindow = document.getElementById('chat-window');
@@ -209,8 +119,8 @@ function addMessage(text, role, metaText = '') {
 
 function respondToUser(input) {
   const result = findBestAnswer(input);
-  const confidenceLabel = `Topic: ${result.topic} · confidence ${Math.round(result.confidence * 100)}%`;
-  addMessage(result.answer, 'bot', confidenceLabel);
+  const meta = `Topic: ${result.topic} · confidence ${Math.round(result.confidence * 100)}%`;
+  addMessage(result.answer, 'bot', meta);
 }
 
 chatForm.addEventListener('submit', (event) => {
@@ -231,13 +141,11 @@ document.querySelectorAll('.chip').forEach((btn) => {
 });
 
 addMessage(
-  'Hi, I can help explain pregnancy symptoms and health planning. Use the predictor above for risk screening and this chat for guidance.',
+  'Hi mama! I am your baby-pink PregnancyAI chatbot 💗 Ask me about warning signs, food, hydration, vitamins, exercise, or sleep comfort.',
   'bot',
-  'Important: this is screening support and not a medical diagnosis.'
+  'This is educational guidance, not a diagnosis.'
 );
 
-setupPredictor();
-
 if (typeof window !== 'undefined') {
-  window.predictHealthRisk = predictHealthRisk;
+  window.findBestAnswer = findBestAnswer;
 }

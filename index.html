@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PregnancyAI Predictive Health System</title>
+    <title>PregnancyAI Care Chatbot</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -12,42 +12,19 @@
   <body>
     <main class="app-shell">
       <section class="hero">
-        <div>
+        <div class="hero-text">
           <p class="kicker">PregnancyAI</p>
-          <h1>Predictive system for pregnancy health + care chatbot</h1>
+          <h1>Your gentle baby-care companion chatbot</h1>
           <p class="subtitle">
-            Enter maternal health indicators to estimate risk level, then use chat guidance for actionable next steps.
-            This tool supports screening and awareness, not diagnosis.
+            Ask questions about nutrition, warning signs, exercise, vitamins, sleep, and pregnancy comfort tips.
+            Fast, friendly guidance in one beautiful chat.
           </p>
         </div>
-      </section>
-
-      <section class="predict-card">
-        <header>
-          <h2>Pregnancy Health Predictor</h2>
-          <p>Evidence-aligned risk scoring for hypertension, glucose, anemia, and clinical history factors.</p>
-        </header>
-
-        <form id="predict-form" class="predict-grid">
-          <label>Maternal age <input type="number" id="age" min="12" max="60" required /></label>
-          <label>Gestational week <input type="number" id="week" min="1" max="42" required /></label>
-          <label>Systolic BP (mmHg) <input type="number" id="sbp" min="70" max="240" required /></label>
-          <label>Diastolic BP (mmHg) <input type="number" id="dbp" min="40" max="140" required /></label>
-          <label>BMI <input type="number" id="bmi" min="12" max="60" step="0.1" required /></label>
-          <label>Glucose (mg/dL) <input type="number" id="glucose" min="40" max="350" required /></label>
-          <label>Hemoglobin (g/dL) <input type="number" id="hemoglobin" min="5" max="18" step="0.1" required /></label>
-
-          <label class="check"><input type="checkbox" id="prevComplication" /> Previous pregnancy complication</label>
-          <label class="check"><input type="checkbox" id="smoking" /> Tobacco use</label>
-          <label class="check"><input type="checkbox" id="reducedMovement" /> Reduced fetal movement (if applicable)</label>
-
-          <button type="submit" class="predict-btn">Run prediction</button>
-        </form>
-
-        <article id="prediction-output" class="prediction-output" aria-live="polite">
-          <h3>Prediction output</h3>
-          <p>Submit the form to get risk probability, level, and recommended next actions.</p>
-        </article>
+        <img
+          class="hero-image"
+          src="https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=900&q=80"
+          alt="Baby shoes and flowers representing pregnancy care"
+        />
       </section>
 
       <section class="chat-card">
@@ -55,20 +32,27 @@
           <div class="status-dot"></div>
           <div>
             <h2>Care Chatbot</h2>
-            <p>Ask about nutrition, warning signs, and prenatal care planning.</p>
+            <p>Friendly support for common pregnancy questions (not a diagnosis)</p>
           </div>
         </header>
+
+        <div class="gallery">
+          <img src="https://images.unsplash.com/photo-1544126592-807ade215a0b?auto=format&fit=crop&w=600&q=80" alt="Happy expecting mother" />
+          <img src="https://images.unsplash.com/photo-1519682337058-a94d519337bc?auto=format&fit=crop&w=600&q=80" alt="Mother holding infant clothes" />
+          <img src="https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&w=600&q=80" alt="Baby items for prenatal preparation" />
+        </div>
 
         <div id="chat-window" class="chat-window" aria-live="polite"></div>
 
         <div class="quick-actions">
           <button class="chip" data-query="What foods should I avoid during pregnancy?">Foods to avoid</button>
           <button class="chip" data-query="How much water should I drink while pregnant?">Hydration</button>
-          <button class="chip" data-query="What are preeclampsia warning signs?">Warning signs</button>
+          <button class="chip" data-query="What are warning signs in pregnancy?">Warning signs</button>
+          <button class="chip" data-query="Which prenatal vitamins are important?">Prenatal vitamins</button>
         </div>
 
         <form id="chat-form" class="chat-form">
-          <input id="chat-input" type="text" autocomplete="off" placeholder="Ask a pregnancy question..." required />
+          <input id="chat-input" type="text" autocomplete="off" placeholder="Ask your pregnancy question..." required />
           <button type="submit">Send</button>
         </form>
       </section>
