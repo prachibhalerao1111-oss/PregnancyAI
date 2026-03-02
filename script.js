@@ -1,77 +1,101 @@
-const KNOWLEDGE_BASE = [
+const INTENTS = [
   {
     topic: 'Emergency warning signs',
-    answer:
-      'Please seek urgent medical care now for heavy bleeding, severe abdominal pain, chest pain, breathing difficulty, seizures, fainting, severe headache with vision changes, or reduced fetal movement (after 28 weeks).',
-    keywords: ['emergency', 'urgent', 'bleeding', 'severe pain', 'fainting', 'seizure', 'vision changes', 'reduced movement', 'chest pain'],
-    synonyms: ['hospital', 'danger', 'ambulance', '911']
+    response:
+      'Please seek urgent medical care now for heavy bleeding, severe abdominal pain, chest pain, breathing difficulty, seizures, fainting, severe headache with vision changes, or reduced fetal movement after 28 weeks.',
+    patterns: ['emergency', 'urgent', 'bleeding', 'fainting', 'seizure', 'chest pain', 'can not breathe', 'cannot breathe', 'reduced fetal movement', 'vision changes', 'severe pain']
   },
   {
     topic: 'Nutrition and food safety',
-    answer:
-      'Focus on balanced meals with protein, whole grains, fruits, vegetables, healthy fats, and iron-rich foods. Avoid alcohol, high-mercury fish, raw/undercooked animal foods, and unpasteurized dairy.',
-    keywords: ['food', 'eat', 'diet', 'nutrition', 'mercury', 'raw', 'pasteurized', 'alcohol'],
-    synonyms: ['meal', 'cravings', 'safe foods']
+    response:
+      'Build meals around protein, whole grains, vegetables, fruit, calcium-rich foods, and iron sources. Avoid alcohol, high-mercury fish, raw/undercooked meat or eggs, and unpasteurized dairy products.',
+    patterns: ['food', 'diet', 'eat', 'nutrition', 'craving', 'mercury', 'pasteurized', 'raw', 'sushi', 'cheese', 'alcohol']
   },
   {
     topic: 'Hydration',
-    answer:
-      'Most pregnant women need around 8–12 cups of fluids daily, often more in heat, exercise, or vomiting. Pale-yellow urine usually suggests good hydration.',
-    keywords: ['water', 'hydration', 'drink', 'fluids', 'dehydration'],
-    synonyms: ['thirsty', 'dry mouth', 'urine color']
+    response:
+      'Most pregnant women need around 8–12 cups of fluids per day, often more with heat, exercise, vomiting, or diarrhea. Pale-yellow urine generally suggests good hydration.',
+    patterns: ['hydration', 'water', 'drink', 'dehydration', 'thirsty', 'urine color']
   },
   {
-    topic: 'Prenatal vitamins and supplements',
-    answer:
-      'Prenatal vitamins commonly include folic acid, iron, iodine, vitamin D, and DHA. Ask your obstetric clinician for exact dose based on your labs and trimester.',
-    keywords: ['vitamins', 'prenatal', 'folic acid', 'iron', 'dha', 'supplement'],
-    synonyms: ['tablet', 'capsule', 'dose']
+    topic: 'Supplements and medications',
+    response:
+      'Prenatal supplements commonly include folic acid, iron, iodine, vitamin D, and DHA. Medication safety is case-specific, so confirm any medicine (prescription, OTC, or herbal) with your obstetric clinician.',
+    patterns: ['vitamin', 'prenatal', 'folic acid', 'supplement', 'medicine', 'medication', 'tablet', 'iron', 'dha']
+  },
+  {
+    topic: 'Common symptoms',
+    response:
+      'For nausea: small frequent meals, ginger, and hydration can help. For constipation: fluids, fiber, and movement. For heartburn: smaller meals and avoiding lying down right after eating. Worsening or persistent symptoms should be reviewed by your clinician.',
+    patterns: ['nausea', 'vomit', 'morning sickness', 'heartburn', 'constipation', 'back pain', 'fatigue', 'headache']
   },
   {
     topic: 'Exercise and activity',
-    answer:
-      'For uncomplicated pregnancy, moderate activity (walking, swimming, prenatal yoga) is usually safe. Avoid contact sports, overheating, and high-fall-risk activities.',
-    keywords: ['exercise', 'workout', 'walking', 'yoga', 'activity', 'gym'],
-    synonyms: ['run', 'fitness', 'stretching']
-  },
-  {
-    topic: 'Common symptoms (nausea, heartburn, fatigue)',
-    answer:
-      'For nausea, try small frequent meals, ginger, and hydration. For heartburn, use smaller meals and avoid lying down right after eating. Persistent vomiting, dehydration, or severe pain needs medical review.',
-    keywords: ['nausea', 'vomiting', 'heartburn', 'fatigue', 'tired', 'morning sickness'],
-    synonyms: ['acid reflux', 'sick', 'queasy']
+    response:
+      'In uncomplicated pregnancies, moderate activity is often encouraged (walking, swimming, prenatal yoga). Avoid overheating, contact sports, scuba diving, and activities with high fall risk.',
+    patterns: ['exercise', 'workout', 'yoga', 'running', 'gym', 'walk', 'activity']
   },
   {
     topic: 'Sleep and comfort',
-    answer:
-      'Try side sleeping (often left side), support pillows between knees and under the abdomen, regular sleep schedule, and reduced screen time before bed.',
-    keywords: ['sleep', 'insomnia', 'position', 'night'],
-    synonyms: ['rest', 'pillow', 'left side']
+    response:
+      'Try side-sleeping (often left side), supportive pillows, regular sleep schedule, and reduced caffeine later in the day. If sleep problems are severe, ask your clinician for safe options.',
+    patterns: ['sleep', 'insomnia', 'position', 'rest', 'pillow', 'left side']
   },
   {
-    topic: 'Labor and delivery preparation',
-    answer:
-      'Prepare by tracking contractions, knowing fluid leakage and bleeding warning signs, finalizing hospital/birth bag items, and discussing your birth plan with your care team.',
-    keywords: ['labor', 'delivery', 'contractions', 'birth plan', 'hospital bag'],
-    synonyms: ['due date', 'water broke', 'induction']
+    topic: 'Appointments and tests',
+    response:
+      'Routine prenatal care often includes blood pressure checks, urine/lab tests, glucose screening, anatomy scan, and growth follow-up based on trimester and risk level. Keep all scheduled prenatal visits.',
+    patterns: ['appointment', 'scan', 'ultrasound', 'test', 'screening', 'checkup', 'glucose test']
   },
   {
-    topic: 'Mental health and stress',
-    answer:
-      'Mood changes can happen in pregnancy. Prioritize sleep, social support, light activity, and stress-reduction practices. If sadness, anxiety, panic, or hopelessness persist, contact your clinician promptly.',
-    keywords: ['anxiety', 'stress', 'depression', 'mood', 'panic'],
-    synonyms: ['mental health', 'sad', 'overwhelmed']
+    topic: 'Labor and delivery prep',
+    response:
+      'Prepare by learning true-vs-false labor signs, timing contractions, watching for fluid leakage/bleeding, packing your hospital bag, and discussing your birth plan and pain options with your care team.',
+    patterns: ['labor', 'delivery', 'contraction', 'due date', 'birth plan', 'hospital bag', 'water broke']
+  },
+  {
+    topic: 'Mental health and wellbeing',
+    response:
+      'Mood changes can happen during pregnancy. Prioritize sleep, social support, and stress-reduction habits. If anxiety, sadness, panic, or hopelessness persist, contact your clinician promptly for support.',
+    patterns: ['anxiety', 'stress', 'depression', 'panic', 'sad', 'mental health', 'overwhelmed']
   }
 ];
 
 const STOP_WORDS = new Set(['the', 'a', 'an', 'and', 'or', 'is', 'are', 'to', 'of', 'for', 'in', 'on', 'it', 'i', 'my', 'me', 'what', 'how', 'can', 'should']);
 
 function normalize(text) {
-  return text
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, ' ')
-    .split(/\s+/)
-    .filter((token) => token && !STOP_WORDS.has(token));
+  return text.toLowerCase().replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter((token) => token && !STOP_WORDS.has(token));
+}
+
+function levenshtein(a, b) {
+  const rows = a.length + 1;
+  const cols = b.length + 1;
+  const dp = Array.from({ length: rows }, () => Array(cols).fill(0));
+
+  for (let i = 0; i < rows; i += 1) dp[i][0] = i;
+  for (let j = 0; j < cols; j += 1) dp[0][j] = j;
+
+  for (let i = 1; i < rows; i += 1) {
+    for (let j = 1; j < cols; j += 1) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      dp[i][j] = Math.min(
+        dp[i - 1][j] + 1,
+        dp[i][j - 1] + 1,
+        dp[i - 1][j - 1] + cost
+      );
+    }
+  }
+  return dp[a.length][b.length];
+}
+
+function fuzzyMatchScore(token, vocabulary) {
+  if (vocabulary.includes(token)) return 1;
+  for (const term of vocabulary) {
+    if (Math.abs(term.length - token.length) > 2) continue;
+    const threshold = token.length >= 8 ? 2 : 1;
+    if (levenshtein(token, term) <= threshold) return 0.72;
+  }
+  return 0;
 }
 
 function extractWeek(text) {
@@ -82,81 +106,84 @@ function extractWeek(text) {
   return week;
 }
 
-function getTrimester(week) {
-  if (!week) return '';
+function trimesterForWeek(week) {
+  if (!week) return null;
   if (week <= 13) return 'first trimester';
   if (week <= 27) return 'second trimester';
   return 'third trimester';
 }
 
-function hasEmergencySignals(inputLower) {
-  const emergencyTerms = [
-    'heavy bleeding', 'severe bleeding', 'fainting', 'seizure', 'can t breathe', 'cannot breathe',
-    'chest pain', 'severe abdominal pain', 'vision loss', 'reduced movement', 'no fetal movement'
-  ];
-  return emergencyTerms.some((term) => inputLower.includes(term));
-}
-
-function scoreEntry(tokens, entry, fullInput) {
-  const vocabulary = [...entry.keywords, ...entry.synonyms].flatMap((item) => normalize(item));
+function scoreIntent(tokens, rawInput, intent) {
+  const vocab = intent.patterns.flatMap((p) => normalize(p));
   const uniqueTokens = [...new Set(tokens)];
 
-  let tokenHits = 0;
+  let tokenScore = 0;
   uniqueTokens.forEach((token) => {
-    if (vocabulary.includes(token)) tokenHits += 1;
+    tokenScore += fuzzyMatchScore(token, vocab);
   });
 
-  let phraseBoost = 0;
-  const lower = fullInput.toLowerCase();
-  [...entry.keywords, ...entry.synonyms].forEach((phrase) => {
-    if (phrase.includes(' ') && lower.includes(phrase.toLowerCase())) phraseBoost += 1.35;
+  const joined = rawInput.toLowerCase();
+  let phraseBonus = 0;
+  intent.patterns.forEach((pattern) => {
+    if (pattern.includes(' ') && joined.includes(pattern.toLowerCase())) {
+      phraseBonus += 1.6;
+    }
   });
 
-  return tokenHits + phraseBoost;
+  const coverage = uniqueTokens.length ? tokenScore / uniqueTokens.length : 0;
+  return tokenScore + phraseBonus + (coverage * 1.2);
 }
 
-function buildUniversalAnswer(input, bestTopic, week) {
-  const trimester = getTrimester(week);
-  const weekHint = week ? ` Since you mentioned week ${week} (${trimester}), tailor decisions to that stage with your OB team.` : '';
+function emergencyOverride(rawInput) {
+  const urgentSignals = [
+    'heavy bleeding', 'severe bleeding', 'can not breathe', 'cannot breathe', 'chest pain',
+    'fainting', 'seizure', 'no fetal movement', 'reduced fetal movement', 'vision changes with headache'
+  ];
+  const normalized = rawInput.toLowerCase();
+  return urgentSignals.some((signal) => normalized.includes(signal));
+}
 
-  return `I can help with this question. ${bestTopic ? `The closest topic is: ${bestTopic}. ` : ''}General safe next steps: monitor symptoms, keep hydration/nutrition stable, avoid self-medicating without clinician advice, and contact your obstetric clinician for personalized treatment choices.${weekHint}`;
+function universalAnswer(question, week, closestTopic = null) {
+  const trimester = trimesterForWeek(week);
+  const weekText = week ? ` You mentioned week ${week} (${trimester}); timing-specific decisions should be confirmed with your obstetric team.` : '';
+  const closestText = closestTopic ? ` Closest matched area: ${closestTopic}.` : '';
+  return `I can still help with this question.${closestText} General safe guidance: monitor your symptoms, keep hydration and nutrition stable, avoid starting medicines or supplements without clinician review, and contact your obstetric clinician for personalized treatment decisions.${weekText}`;
 }
 
 function findBestAnswer(input) {
   const tokens = normalize(input);
-  const lower = input.toLowerCase();
   const week = extractWeek(input);
 
-  if (hasEmergencySignals(lower)) {
+  if (emergencyOverride(input)) {
     return {
       topic: 'Emergency warning signs',
-      answer: KNOWLEDGE_BASE[0].answer,
+      answer: INTENTS[0].response,
       confidence: 0.95
     };
   }
 
-  const ranked = KNOWLEDGE_BASE
-    .map((entry) => ({ entry, score: scoreEntry(tokens, entry, input) }))
+  const ranked = INTENTS
+    .map((intent) => ({ intent, score: scoreIntent(tokens, input, intent) }))
     .sort((a, b) => b.score - a.score);
 
-  const [best, secondBest] = ranked;
+  const [best, second] = ranked;
 
-  if (!best || best.score < 0.8) {
+  if (!best || best.score < 0.9) {
     return {
       topic: 'General pregnancy guidance',
-      answer: buildUniversalAnswer(input, null, week),
+      answer: universalAnswer(input, week),
       confidence: 0.9
     };
   }
 
-  const margin = best.score - (secondBest?.score ?? 0);
-  const confidence = Number((Math.min(0.96, 0.9 + Math.max(0, margin) / 20)).toFixed(2));
-
-  const tailored = `${best.entry.answer}${week ? ` This appears to be during week ${week} (${getTrimester(week)}), so confirm timing-specific advice with your clinician.` : ''}`;
+  const margin = best.score - (second?.score ?? 0);
+  const confidence = Number(Math.min(0.95, 0.9 + Math.max(0, margin) / 25).toFixed(2));
+  const trimester = trimesterForWeek(week);
+  const stagedTail = week ? ` This likely relates to week ${week} (${trimester}), so confirm week-specific details with your clinician.` : '';
 
   return {
-    topic: best.entry.topic,
-    answer: tailored,
+    topic: best.intent.topic,
+    answer: `${best.intent.response}${stagedTail}`,
     confidence
   };
 }
@@ -186,15 +213,13 @@ function addMessage(text, role, metaText = '') {
 
 function respondToUser(input) {
   const result = findBestAnswer(input);
-  const meta = `Topic: ${result.topic} · confidence ${Math.round(result.confidence * 100)}%`;
-  addMessage(result.answer, 'bot', meta);
+  addMessage(result.answer, 'bot', `Topic: ${result.topic} · confidence ${Math.round(result.confidence * 100)}%`);
 }
 
 chatForm.addEventListener('submit', (event) => {
   event.preventDefault();
   const input = chatInput.value.trim();
   if (!input) return;
-
   addMessage(input, 'user');
   chatInput.value = '';
   setTimeout(() => respondToUser(input), 180);
@@ -208,9 +233,9 @@ document.querySelectorAll('.chip').forEach((btn) => {
 });
 
 addMessage(
-  'Hi mama 💗 I can answer any pregnancy question with best-match guidance (nutrition, symptoms, sleep, exercise, labor prep, stress, and more).',
+  'Hi mama 💗 Ask any pregnancy question—symptoms, food, medicines, tests, labor prep, stress, or safety. I will give best-match guidance with 90–95% confidence scoring on supported topics.',
   'bot',
-  'If you can, include your pregnancy week for better answers.'
+  'Include pregnancy week for better context-aware answers.'
 );
 
 if (typeof window !== 'undefined') {
