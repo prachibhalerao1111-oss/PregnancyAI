@@ -6,13 +6,8 @@ PregnancyAI is now a **chatbot-only** static web app focused on friendly pregnan
 
 - Baby-pink, attractive chat interface.
 - Hero + gallery images for a warm visual experience.
-- Rule-based chatbot responses for:
-  - warning signs,
-  - foods to avoid,
-  - hydration,
-  - prenatal vitamins,
-  - exercise,
-  - sleep comfort.
+- Expanded multi-topic chatbot coverage for warning signs, nutrition, hydration, vitamins, exercise, sleep, labor prep, common symptoms, and mental wellbeing.
+- Universal fallback guidance so every pregnancy question receives a useful response.
 - Quick-action chips for common questions.
 
 > ⚠️ This tool provides educational support only and is not a medical diagnosis platform.
@@ -22,7 +17,7 @@ PregnancyAI is now a **chatbot-only** static web app focused on friendly pregnan
 - `index.html` — chatbot UI with image-rich layout.
 - `styles.css` — baby-pink visual theme and responsive styles.
 - `script.js` — chatbot knowledge base, matching logic, and chat rendering.
-- `tests/chatbot.test.js` — automated validation for chatbot topic routing.
+- `tests/chatbot.test.js` — automated validation for broad chatbot routing and universal fallback behavior.
 
 ## Run locally
 
