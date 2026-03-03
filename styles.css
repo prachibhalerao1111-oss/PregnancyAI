@@ -113,7 +113,7 @@ h1 { margin: 0.4rem 0 0.35rem; font-size: clamp(1.5rem, 3.8vw, 2.45rem); }
 
 .api-config {
   display: grid;
-  grid-template-columns: 1fr 170px;
+  grid-template-columns: 1fr 180px 1.2fr;
   gap: 0.5rem;
 }
 
