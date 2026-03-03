@@ -1,0 +1,215 @@
+:root {
+  --bg: #fff6fb;
+  --surface: #fff0f7;
+  --surface-strong: #ffe1ef;
+  --accent: #ff6fae;
+  --accent-2: #ff9bc4;
+  --text: #5a2240;
+  --muted: #8f5f78;
+  --border: rgba(255, 111, 174, 0.25);
+  --success: #ffa0c8;
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  color: var(--text);
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 8% 8%, #ffd9ec 0, transparent 30%),
+    radial-gradient(circle at 92% 12%, #ffe0f0 0, transparent 34%),
+    radial-gradient(circle at 70% 90%, #ffe8f4 0, transparent 30%),
+    var(--bg);
+}
+
+.app-shell {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.hero,
+.chat-card {
+  border: 1px solid var(--border);
+  border-radius: 26px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 8px 30px rgba(255, 111, 174, 0.12);
+}
+
+.hero {
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 1rem;
+  align-items: center;
+}
+
+.hero-text { padding: 0.4rem 0.4rem 0.4rem 0.6rem; }
+.kicker {
+  margin: 0;
+  letter-spacing: 0.12rem;
+  color: var(--accent);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+h1 { margin: 0.4rem 0 0.35rem; font-size: clamp(1.5rem, 3.8vw, 2.45rem); }
+.subtitle { margin: 0; color: var(--muted); line-height: 1.45; }
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  min-height: 220px;
+  max-height: 320px;
+  object-fit: cover;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+}
+
+.chat-card {
+  padding: 1rem;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.8rem;
+}
+
+.chat-header h2 { margin: 0; font-size: 1.08rem; }
+.chat-header p { margin: 0.2rem 0 0; color: var(--muted); font-size: 0.88rem; }
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--success);
+  box-shadow: 0 0 0 8px rgba(255, 160, 200, 0.28);
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.gallery img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+
+.api-config {
+  display: grid;
+  grid-template-columns: 1fr 180px 1.2fr;
+  gap: 0.5rem;
+}
+
+.api-config input {
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  padding: 0.62rem 0.72rem;
+}
+
+.chat-window {
+  height: min(52vh, 430px);
+  overflow-y: auto;
+  background: rgba(255, 245, 251, 0.92);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 0.9rem;
+  display: grid;
+  align-content: start;
+  gap: 0.7rem;
+}
+
+.message {
+  max-width: 86%;
+  padding: 0.75rem 0.85rem;
+  border-radius: 14px;
+  font-size: 0.95rem;
+  line-height: 1.38;
+}
+
+.message.user {
+  justify-self: end;
+  color: #fff;
+  background: linear-gradient(135deg, #ff6fae, #ff92bd);
+}
+
+.message.bot {
+  justify-self: start;
+  background: var(--surface-strong);
+  border: 1px solid var(--border);
+}
+
+.meta {
+  margin-top: 0.45rem;
+  font-size: 0.74rem;
+  color: var(--muted);
+}
+
+.quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.chip {
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  border-radius: 999px;
+  padding: 0.5rem 0.72rem;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.chat-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.55rem;
+}
+
+#chat-input {
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  padding: 0.8rem;
+}
+
+.chat-form button {
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  padding: 0 1rem;
+  cursor: pointer;
+}
+
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 680px) {
+  .api-config { grid-template-columns: 1fr; }
+  .gallery { grid-template-columns: 1fr; }
+  .gallery img { height: 160px; }
+  .message { max-width: 95%; }
+}

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PregnancyAI Care Chatbot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="hero">
+        <div class="hero-text">
+          <p class="kicker">PregnancyAI</p>
+          <h1>Your gentle baby-care companion chatbot</h1>
+          <p class="subtitle">
+            Ask questions about nutrition, symptoms, scans, medicines, travel, sleep, labor, and postpartum care.
+            API mode gives full AI answers; smart local mode always gives practical fallback.
+          </p>
+        </div>
+        <img
+          class="hero-image"
+          src="https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=900&q=80"
+          alt="Baby shoes and flowers representing pregnancy care"
+        />
+      </section>
+
+      <section class="chat-card">
+        <header class="chat-header">
+          <div class="status-dot"></div>
+          <div>
+            <h2>Care Chatbot</h2>
+            <p>Pregnancy-specialized support (educational, not diagnosis)</p>
+          </div>
+        </header>
+
+        <div class="gallery">
+          <img src="https://images.unsplash.com/photo-1544126592-807ade215a0b?auto=format&fit=crop&w=600&q=80" alt="Happy expecting mother" />
+          <img src="https://images.unsplash.com/photo-1519682337058-a94d519337bc?auto=format&fit=crop&w=600&q=80" alt="Mother holding infant clothes" />
+          <img src="https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&w=600&q=80" alt="Baby items for prenatal preparation" />
+        </div>
+
+        <div class="api-config">
+          <input id="api-key" type="password" placeholder="API key (optional)" autocomplete="off" />
+          <input id="api-model" type="text" value="gpt-4o-mini" placeholder="Model (e.g., gpt-4o-mini)" />
+          <input id="api-base" type="text" value="https://api.openai.com/v1" placeholder="API base URL" />
+        </div>
+
+        <div id="chat-window" class="chat-window" aria-live="polite"></div>
+
+        <div class="quick-actions">
+          <button class="chip" data-query="What foods should I avoid during pregnancy?">Foods to avoid</button>
+          <button class="chip" data-query="How much water should I drink while pregnant?">Hydration</button>
+          <button class="chip" data-query="What are warning signs in pregnancy?">Warning signs</button>
+          <button class="chip" data-query="Which prenatal vitamins are important?">Prenatal vitamins</button>
+        </div>
+
+        <form id="chat-form" class="chat-form">
+          <input id="chat-input" type="text" autocomplete="off" placeholder="Ask any pregnancy question..." required />
+          <button type="submit">Send</button>
+        </form>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
