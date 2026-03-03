@@ -32,8 +32,9 @@ function loadFunctions() {
   return sandbox.window;
 }
 
-const { findBestAnswer } = loadFunctions();
+const { findBestAnswer, buildApiMessages } = loadFunctions();
 assert.equal(typeof findBestAnswer, 'function');
+assert.equal(typeof buildApiMessages, 'function');
 
 assert.equal(findBestAnswer('I have heavy bleeding and chest pain').topic, 'Emergency warning signs');
 assert.equal(findBestAnswer('Can I eat sushi or unpasteurized cheese?').topic, 'Nutrition and food safety');
@@ -51,3 +52,7 @@ assert.equal(fallback.topic, 'General pregnancy guidance');
 assert.match(fallback.answer, /General safe guidance/i);
 
 console.log('All chatbot tests passed.');
+
+const messages = buildApiMessages('Is papaya safe in pregnancy?');
+assert.equal(messages[0].role, 'system');
+assert.equal(messages[1].role, 'user');

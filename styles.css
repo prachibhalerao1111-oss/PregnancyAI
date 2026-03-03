@@ -110,6 +110,21 @@ h1 { margin: 0.4rem 0 0.35rem; font-size: clamp(1.5rem, 3.8vw, 2.45rem); }
   border: 1px solid var(--border);
 }
 
+
+.api-config {
+  display: grid;
+  grid-template-columns: 1fr 170px;
+  gap: 0.5rem;
+}
+
+.api-config input {
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  padding: 0.62rem 0.72rem;
+}
+
 .chat-window {
   height: min(52vh, 430px);
   overflow-y: auto;
@@ -193,6 +208,7 @@ h1 { margin: 0.4rem 0 0.35rem; font-size: clamp(1.5rem, 3.8vw, 2.45rem); }
 }
 
 @media (max-width: 680px) {
+  .api-config { grid-template-columns: 1fr; }
   .gallery { grid-template-columns: 1fr; }
   .gallery img { height: 160px; }
   .message { max-width: 95%; }

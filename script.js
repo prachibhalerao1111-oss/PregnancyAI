@@ -71,18 +71,12 @@ function levenshtein(a, b) {
   const rows = a.length + 1;
   const cols = b.length + 1;
   const dp = Array.from({ length: rows }, () => Array(cols).fill(0));
-
   for (let i = 0; i < rows; i += 1) dp[i][0] = i;
   for (let j = 0; j < cols; j += 1) dp[0][j] = j;
-
   for (let i = 1; i < rows; i += 1) {
     for (let j = 1; j < cols; j += 1) {
       const cost = a[i - 1] === b[j - 1] ? 0 : 1;
-      dp[i][j] = Math.min(
-        dp[i - 1][j] + 1,
-        dp[i][j - 1] + 1,
-        dp[i - 1][j - 1] + cost
-      );
+      dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
     }
   }
   return dp[a.length][b.length];
@@ -116,29 +110,21 @@ function trimesterForWeek(week) {
 function scoreIntent(tokens, rawInput, intent) {
   const vocab = intent.patterns.flatMap((p) => normalize(p));
   const uniqueTokens = [...new Set(tokens)];
-
   let tokenScore = 0;
   uniqueTokens.forEach((token) => {
     tokenScore += fuzzyMatchScore(token, vocab);
   });
-
   const joined = rawInput.toLowerCase();
   let phraseBonus = 0;
   intent.patterns.forEach((pattern) => {
-    if (pattern.includes(' ') && joined.includes(pattern.toLowerCase())) {
-      phraseBonus += 1.6;
-    }
+    if (pattern.includes(' ') && joined.includes(pattern.toLowerCase())) phraseBonus += 1.6;
   });
-
   const coverage = uniqueTokens.length ? tokenScore / uniqueTokens.length : 0;
   return tokenScore + phraseBonus + (coverage * 1.2);
 }
 
 function emergencyOverride(rawInput) {
-  const urgentSignals = [
-    'heavy bleeding', 'severe bleeding', 'can not breathe', 'cannot breathe', 'chest pain',
-    'fainting', 'seizure', 'no fetal movement', 'reduced fetal movement', 'vision changes with headache'
-  ];
+  const urgentSignals = ['heavy bleeding', 'severe bleeding', 'can not breathe', 'cannot breathe', 'chest pain', 'fainting', 'seizure', 'no fetal movement', 'reduced fetal movement', 'vision changes with headache'];
   const normalized = rawInput.toLowerCase();
   return urgentSignals.some((signal) => normalized.includes(signal));
 }
@@ -153,76 +139,107 @@ function universalAnswer(question, week, closestTopic = null) {
 function findBestAnswer(input) {
   const tokens = normalize(input);
   const week = extractWeek(input);
-
   if (emergencyOverride(input)) {
-    return {
-      topic: 'Emergency warning signs',
-      answer: INTENTS[0].response,
-      confidence: 0.95
-    };
+    return { topic: 'Emergency warning signs', answer: INTENTS[0].response, confidence: 0.95 };
   }
-
-  const ranked = INTENTS
-    .map((intent) => ({ intent, score: scoreIntent(tokens, input, intent) }))
-    .sort((a, b) => b.score - a.score);
-
+  const ranked = INTENTS.map((intent) => ({ intent, score: scoreIntent(tokens, input, intent) })).sort((a, b) => b.score - a.score);
   const [best, second] = ranked;
-
   if (!best || best.score < 0.9) {
-    return {
-      topic: 'General pregnancy guidance',
-      answer: universalAnswer(input, week),
-      confidence: 0.9
-    };
+    return { topic: 'General pregnancy guidance', answer: universalAnswer(input, week), confidence: 0.9 };
   }
-
   const margin = best.score - (second?.score ?? 0);
   const confidence = Number(Math.min(0.95, 0.9 + Math.max(0, margin) / 25).toFixed(2));
   const trimester = trimesterForWeek(week);
   const stagedTail = week ? ` This likely relates to week ${week} (${trimester}), so confirm week-specific details with your clinician.` : '';
+  return { topic: best.intent.topic, answer: `${best.intent.response}${stagedTail}`, confidence };
+}
 
-  return {
-    topic: best.intent.topic,
-    answer: `${best.intent.response}${stagedTail}`,
-    confidence
-  };
+function buildApiMessages(userInput) {
+  return [
+    {
+      role: 'system',
+      content: 'You are PregnancyAI, a supportive pregnancy-health chatbot. Give practical, concise, evidence-aligned advice. Clearly state emergency red flags and recommend urgent care when appropriate. Never claim to diagnose. If medication/treatment is asked, advise clinician confirmation.'
+    },
+    {
+      role: 'user',
+      content: userInput
+    }
+  ];
+}
+
+async function getApiAnswer(userInput, apiKey, model) {
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${apiKey}`
+    },
+    body: JSON.stringify({
+      model,
+      messages: buildApiMessages(userInput),
+      temperature: 0.2
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`API request failed (${response.status})`);
+  }
+
+  const payload = await response.json();
+  const content = payload?.choices?.[0]?.message?.content?.trim();
+  if (!content) throw new Error('Empty API response');
+  return content;
 }
 
 const chatWindow = document.getElementById('chat-window');
 const chatForm = document.getElementById('chat-form');
 const chatInput = document.getElementById('chat-input');
+const apiKeyInput = document.getElementById('api-key');
+const apiModelInput = document.getElementById('api-model');
 
 function addMessage(text, role, metaText = '') {
   const msg = document.createElement('article');
   msg.className = `message ${role}`;
-
   const body = document.createElement('div');
   body.textContent = text;
   msg.appendChild(body);
-
   if (metaText) {
     const meta = document.createElement('p');
     meta.className = 'meta';
     meta.textContent = metaText;
     msg.appendChild(meta);
   }
-
   chatWindow.appendChild(msg);
   chatWindow.scrollTop = chatWindow.scrollHeight;
 }
 
-function respondToUser(input) {
+async function respondToUser(input) {
+  const apiKey = apiKeyInput?.value?.trim();
+  const model = apiModelInput?.value?.trim() || 'gpt-4o-mini';
+
+  if (apiKey && typeof fetch === 'function') {
+    try {
+      const aiAnswer = await getApiAnswer(input, apiKey, model);
+      addMessage(aiAnswer, 'bot', `Topic: API AI response · model ${model}`);
+      return;
+    } catch (err) {
+      const local = findBestAnswer(input);
+      addMessage(local.answer, 'bot', `Topic: ${local.topic} · fallback after API error`);
+      return;
+    }
+  }
+
   const result = findBestAnswer(input);
   addMessage(result.answer, 'bot', `Topic: ${result.topic} · confidence ${Math.round(result.confidence * 100)}%`);
 }
 
-chatForm.addEventListener('submit', (event) => {
+chatForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   const input = chatInput.value.trim();
   if (!input) return;
   addMessage(input, 'user');
   chatInput.value = '';
-  setTimeout(() => respondToUser(input), 180);
+  await respondToUser(input);
 });
 
 document.querySelectorAll('.chip').forEach((btn) => {
@@ -233,11 +250,12 @@ document.querySelectorAll('.chip').forEach((btn) => {
 });
 
 addMessage(
-  'Hi mama 💗 Ask any pregnancy question—symptoms, food, medicines, tests, labor prep, stress, or safety. I will give best-match guidance with 90–95% confidence scoring on supported topics.',
+  'Hi mama 💗 Add your API key above to enable full AI answers for any question. Without API key, I still provide local pregnancy guidance with 90–95% confidence on supported topics.',
   'bot',
-  'Include pregnancy week for better context-aware answers.'
+  'Educational support only; for diagnosis/treatment please contact your clinician.'
 );
 
 if (typeof window !== 'undefined') {
   window.findBestAnswer = findBestAnswer;
+  window.buildApiMessages = buildApiMessages;
 }
