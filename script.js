@@ -2,62 +2,80 @@ const INTENTS = [
   {
     topic: 'Emergency warning signs',
     response:
-      'Please seek urgent medical care now for heavy bleeding, severe abdominal pain, chest pain, breathing difficulty, seizures, fainting, severe headache with vision changes, or reduced fetal movement after 28 weeks.',
-    patterns: ['emergency', 'urgent', 'bleeding', 'fainting', 'seizure', 'chest pain', 'can not breathe', 'cannot breathe', 'reduced fetal movement', 'vision changes', 'severe pain']
+      'Get urgent care now for heavy bleeding, severe abdominal pain, chest pain, breathing trouble, seizure, fainting, severe headache with vision changes, or reduced/no fetal movement after 28 weeks.',
+    patterns: ['emergency', 'urgent', 'heavy bleeding', 'seizure', 'fainting', 'chest pain', 'cannot breathe', 'reduced fetal movement', 'severe headache', 'vision changes']
   },
   {
     topic: 'Nutrition and food safety',
     response:
-      'Build meals around protein, whole grains, vegetables, fruit, calcium-rich foods, and iron sources. Avoid alcohol, high-mercury fish, raw/undercooked meat or eggs, and unpasteurized dairy products.',
+      'Use balanced meals with protein, whole grains, fruits, vegetables, calcium, and iron-rich foods. Avoid alcohol, high-mercury fish, raw/undercooked meat or eggs, and unpasteurized dairy.',
     patterns: ['food', 'diet', 'eat', 'nutrition', 'craving', 'mercury', 'pasteurized', 'raw', 'sushi', 'cheese', 'alcohol']
   },
   {
     topic: 'Hydration',
     response:
-      'Most pregnant women need around 8–12 cups of fluids per day, often more with heat, exercise, vomiting, or diarrhea. Pale-yellow urine generally suggests good hydration.',
+      'Most pregnant women need ~8–12 cups of fluids per day, often more in heat, exercise, vomiting, or diarrhea. Pale-yellow urine usually indicates better hydration.',
     patterns: ['hydration', 'water', 'drink', 'dehydration', 'thirsty', 'urine color']
   },
   {
     topic: 'Supplements and medications',
     response:
-      'Prenatal supplements commonly include folic acid, iron, iodine, vitamin D, and DHA. Medication safety is case-specific, so confirm any medicine (prescription, OTC, or herbal) with your obstetric clinician.',
-    patterns: ['vitamin', 'prenatal', 'folic acid', 'supplement', 'medicine', 'medication', 'tablet', 'iron', 'dha']
+      'Prenatal supplements often include folic acid, iron, iodine, vitamin D, and DHA. For any medicine (prescription/OTC/herbal), confirm safety with your obstetric clinician before use.',
+    patterns: ['vitamin', 'prenatal', 'folic acid', 'supplement', 'medicine', 'medication', 'tablet', 'iron', 'dha', 'painkiller']
   },
   {
     topic: 'Common symptoms',
     response:
-      'For nausea: small frequent meals, ginger, and hydration can help. For constipation: fluids, fiber, and movement. For heartburn: smaller meals and avoiding lying down right after eating. Worsening or persistent symptoms should be reviewed by your clinician.',
-    patterns: ['nausea', 'vomit', 'morning sickness', 'heartburn', 'constipation', 'back pain', 'fatigue', 'headache']
+      'For nausea: small frequent meals + ginger + fluids. For constipation: fiber + hydration + movement. For heartburn: smaller meals and avoid lying down after food. Persistent or worsening symptoms should be reviewed clinically.',
+    patterns: ['nausea', 'vomit', 'morning sickness', 'heartburn', 'constipation', 'back pain', 'fatigue', 'headache', 'swelling']
   },
   {
     topic: 'Exercise and activity',
     response:
-      'In uncomplicated pregnancies, moderate activity is often encouraged (walking, swimming, prenatal yoga). Avoid overheating, contact sports, scuba diving, and activities with high fall risk.',
+      'For uncomplicated pregnancy, moderate activity (walking, swimming, prenatal yoga) is commonly advised. Avoid overheating, contact sports, scuba, and high-fall-risk activities.',
     patterns: ['exercise', 'workout', 'yoga', 'running', 'gym', 'walk', 'activity']
   },
   {
     topic: 'Sleep and comfort',
     response:
-      'Try side-sleeping (often left side), supportive pillows, regular sleep schedule, and reduced caffeine later in the day. If sleep problems are severe, ask your clinician for safe options.',
+      'Try side sleeping (often left side), support pillows, regular sleep schedule, and less evening caffeine/screen time. Severe sleep disturbance should be discussed with your clinician.',
     patterns: ['sleep', 'insomnia', 'position', 'rest', 'pillow', 'left side']
   },
   {
     topic: 'Appointments and tests',
     response:
-      'Routine prenatal care often includes blood pressure checks, urine/lab tests, glucose screening, anatomy scan, and growth follow-up based on trimester and risk level. Keep all scheduled prenatal visits.',
-    patterns: ['appointment', 'scan', 'ultrasound', 'test', 'screening', 'checkup', 'glucose test']
+      'Routine prenatal care often includes BP checks, urine/labs, glucose screening, anatomy scan, and growth follow-up based on trimester and risk profile. Keep scheduled visits.',
+    patterns: ['appointment', 'scan', 'ultrasound', 'test', 'screening', 'checkup', 'glucose test', 'nt scan', 'anomaly scan']
   },
   {
     topic: 'Labor and delivery prep',
     response:
-      'Prepare by learning true-vs-false labor signs, timing contractions, watching for fluid leakage/bleeding, packing your hospital bag, and discussing your birth plan and pain options with your care team.',
-    patterns: ['labor', 'delivery', 'contraction', 'due date', 'birth plan', 'hospital bag', 'water broke']
+      'Prepare by learning true-vs-false labor signs, timing contractions, watching for fluid leakage/bleeding, packing a hospital bag, and discussing birth plan and pain options.',
+    patterns: ['labor', 'delivery', 'contraction', 'due date', 'birth plan', 'hospital bag', 'water broke', 'induction', 'c section']
   },
   {
     topic: 'Mental health and wellbeing',
     response:
-      'Mood changes can happen during pregnancy. Prioritize sleep, social support, and stress-reduction habits. If anxiety, sadness, panic, or hopelessness persist, contact your clinician promptly for support.',
+      'Mood changes can happen in pregnancy. Prioritize sleep, social support, light activity, and stress-reduction habits. Persistent anxiety, panic, sadness, or hopelessness needs clinical support.',
     patterns: ['anxiety', 'stress', 'depression', 'panic', 'sad', 'mental health', 'overwhelmed']
+  },
+  {
+    topic: 'Travel and daily life',
+    response:
+      'Travel is often possible in uncomplicated pregnancy, but timing/risk matters. Keep hydration, move regularly on long trips, wear seat belts properly, and confirm travel safety with your clinician—especially in late pregnancy.',
+    patterns: ['travel', 'flight', 'flying', 'car trip', 'journey', 'seat belt']
+  },
+  {
+    topic: 'Sex and relationships',
+    response:
+      'Sex is commonly safe in uncomplicated pregnancy. Avoid or pause if your clinician advised pelvic rest, or if you have bleeding, pain, fluid leakage, or placenta/cervical concerns.',
+    patterns: ['sex', 'intercourse', 'intimacy', 'relationship']
+  },
+  {
+    topic: 'Work and lifestyle',
+    response:
+      'Most people can continue work with adjustments: hydration breaks, posture support, avoiding heavy lifting/toxins, and managing fatigue. Ask your clinician for personalized workplace limits.',
+    patterns: ['work', 'office', 'shift', 'lifting', 'standing', 'job']
   }
 ];
 
@@ -117,74 +135,76 @@ function scoreIntent(tokens, rawInput, intent) {
   const joined = rawInput.toLowerCase();
   let phraseBonus = 0;
   intent.patterns.forEach((pattern) => {
-    if (pattern.includes(' ') && joined.includes(pattern.toLowerCase())) phraseBonus += 1.6;
+    if (pattern.includes(' ') && joined.includes(pattern.toLowerCase())) phraseBonus += 1.45;
   });
   const coverage = uniqueTokens.length ? tokenScore / uniqueTokens.length : 0;
-  return tokenScore + phraseBonus + (coverage * 1.2);
+  return tokenScore + phraseBonus + (coverage * 1.3);
 }
 
 function emergencyOverride(rawInput) {
-  const urgentSignals = ['heavy bleeding', 'severe bleeding', 'can not breathe', 'cannot breathe', 'chest pain', 'fainting', 'seizure', 'no fetal movement', 'reduced fetal movement', 'vision changes with headache'];
+  const urgentSignals = ['heavy bleeding', 'severe bleeding', 'cannot breathe', 'chest pain', 'fainting', 'seizure', 'no fetal movement', 'reduced fetal movement', 'vision changes with headache'];
   const normalized = rawInput.toLowerCase();
   return urgentSignals.some((signal) => normalized.includes(signal));
 }
 
-function universalAnswer(question, week, closestTopic = null) {
+function buildPracticalChecklist(question, week) {
   const trimester = trimesterForWeek(week);
-  const weekText = week ? ` You mentioned week ${week} (${trimester}); timing-specific decisions should be confirmed with your obstetric team.` : '';
-  const closestText = closestTopic ? ` Closest matched area: ${closestTopic}.` : '';
-  return `I can still help with this question.${closestText} General safe guidance: monitor your symptoms, keep hydration and nutrition stable, avoid starting medicines or supplements without clinician review, and contact your obstetric clinician for personalized treatment decisions.${weekText}`;
+  const stageText = week ? `Because you mentioned week ${week} (${trimester}), confirm timing-specific advice with your obstetric team.` : 'If possible, include your pregnancy week for more tailored guidance.';
+  return `Practical next steps:\n1) Track symptom timing/severity and triggers.\n2) Maintain hydration and regular nutrition.\n3) Avoid starting medicines/supplements without clinician confirmation.\n4) Seek urgent care for bleeding, severe pain, chest pain, breathing trouble, fainting, or reduced fetal movement after 28 weeks.\n${stageText}`;
 }
 
-function findBestAnswer(input) {
+function universalAnswer(question, week, closestTopic = null) {
+  const closestText = closestTopic ? `Closest matched area: ${closestTopic}.` : 'I could not map this to one exact topic.';
+  return `${closestText} I can still help with this question in a safe way. ${buildPracticalChecklist(question, week)}`;
+}
+
+function localAnswer(input) {
   const tokens = normalize(input);
   const week = extractWeek(input);
+
   if (emergencyOverride(input)) {
     return { topic: 'Emergency warning signs', answer: INTENTS[0].response, confidence: 0.95 };
   }
+
   const ranked = INTENTS.map((intent) => ({ intent, score: scoreIntent(tokens, input, intent) })).sort((a, b) => b.score - a.score);
   const [best, second] = ranked;
-  if (!best || best.score < 0.9) {
+
+  if (!best || best.score < 0.8) {
     return { topic: 'General pregnancy guidance', answer: universalAnswer(input, week), confidence: 0.9 };
   }
+
+  const secondTopic = second?.intent?.topic;
   const margin = best.score - (second?.score ?? 0);
   const confidence = Number(Math.min(0.95, 0.9 + Math.max(0, margin) / 25).toFixed(2));
   const trimester = trimesterForWeek(week);
-  const stagedTail = week ? ` This likely relates to week ${week} (${trimester}), so confirm week-specific details with your clinician.` : '';
-  return { topic: best.intent.topic, answer: `${best.intent.response}${stagedTail}`, confidence };
+  const stageTail = week ? ` This appears related to week ${week} (${trimester}).` : '';
+  const combinedContext = secondTopic ? ` Related area: ${secondTopic}.` : '';
+
+  return {
+    topic: best.intent.topic,
+    answer: `${best.intent.response}${combinedContext}${stageTail} ${buildPracticalChecklist(input, week)}`,
+    confidence
+  };
 }
 
 function buildApiMessages(userInput) {
   return [
     {
       role: 'system',
-      content: 'You are PregnancyAI, a supportive pregnancy-health chatbot. Give practical, concise, evidence-aligned advice. Clearly state emergency red flags and recommend urgent care when appropriate. Never claim to diagnose. If medication/treatment is asked, advise clinician confirmation.'
+      content: 'You are PregnancyAI, a supportive pregnancy-health chatbot. Answer any pregnancy question with practical and evidence-aligned guidance. Always mention urgent red flags when relevant. Never claim diagnosis. For medicines/treatment, advise clinician confirmation. If uncertain, provide safe next steps and follow-up questions.'
     },
-    {
-      role: 'user',
-      content: userInput
-    }
+    { role: 'user', content: userInput }
   ];
 }
 
 async function getApiAnswer(userInput, apiKey, model) {
   const response = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${apiKey}`
-    },
-    body: JSON.stringify({
-      model,
-      messages: buildApiMessages(userInput),
-      temperature: 0.2
-    })
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+    body: JSON.stringify({ model, messages: buildApiMessages(userInput), temperature: 0.2 })
   });
 
-  if (!response.ok) {
-    throw new Error(`API request failed (${response.status})`);
-  }
-
+  if (!response.ok) throw new Error(`API request failed (${response.status})`);
   const payload = await response.json();
   const content = payload?.choices?.[0]?.message?.content?.trim();
   if (!content) throw new Error('Empty API response');
@@ -220,16 +240,16 @@ async function respondToUser(input) {
   if (apiKey && typeof fetch === 'function') {
     try {
       const aiAnswer = await getApiAnswer(input, apiKey, model);
-      addMessage(aiAnswer, 'bot', `Topic: API AI response · model ${model}`);
+      addMessage(aiAnswer, 'bot', `Topic: Full AI answer · model ${model}`);
       return;
-    } catch (err) {
-      const local = findBestAnswer(input);
-      addMessage(local.answer, 'bot', `Topic: ${local.topic} · fallback after API error`);
+    } catch (_err) {
+      const local = localAnswer(input);
+      addMessage(local.answer, 'bot', `Topic: ${local.topic} · local fallback after API error`);
       return;
     }
   }
 
-  const result = findBestAnswer(input);
+  const result = localAnswer(input);
   addMessage(result.answer, 'bot', `Topic: ${result.topic} · confidence ${Math.round(result.confidence * 100)}%`);
 }
 
@@ -250,12 +270,12 @@ document.querySelectorAll('.chip').forEach((btn) => {
 });
 
 addMessage(
-  'Hi mama 💗 Add your API key above to enable full AI answers for any question. Without API key, I still provide local pregnancy guidance with 90–95% confidence on supported topics.',
+  'Hi mama 💗 I can handle broad pregnancy questions. For best open-ended answers, add API key above. Without key, I still provide detailed local guidance with safety checklists.',
   'bot',
-  'Educational support only; for diagnosis/treatment please contact your clinician.'
+  'Educational support only; for diagnosis and treatment, contact your clinician.'
 );
 
 if (typeof window !== 'undefined') {
-  window.findBestAnswer = findBestAnswer;
+  window.findBestAnswer = localAnswer;
   window.buildApiMessages = buildApiMessages;
 }
